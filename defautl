@@ -19,14 +19,15 @@
 # Default server configuration
 #
 upstream page1 {
-	server localhost:81;
+	server 127.0.0.1:8080;
 }
 
 server {
 	#listen 80 default_server;
 	#listen [::]:80 default_server;
 
-	listen 81;
+	listen 80;
+	listen 443;
 
 	# SSL configuration
 	#
@@ -48,17 +49,17 @@ server {
 	root /var/www/tutorial;
 
 	# Add index.php to the list if you are using PHP
-	#index index.html index.htm index.nginx-debian.html;
+	index index.html index.htm index.nginx-debian.html;
 
 	server_name _;
 
 	location / {
 		# First attempt to serve request as file, then
 		# as directory, then fall back to displaying a 404.
-		proxy_pass https://page1;
+		#proxy_pass https://page1;
+	
 		#root /var/www/tutorial;
-		index index.html;
-#		try_files $uri $uri/ =404;
+		try_files $uri $uri/ =404;
 	}
 
 	# pass PHP scripts to FastCGI server

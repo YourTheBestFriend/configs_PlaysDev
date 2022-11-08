@@ -25,20 +25,33 @@ server {
 	}
 
 	#--------------------------------------------------------- music mp3
-	location ~ /my_music/.+\.mp3$ {
-		add_header Content-Type audio/mpeg;		
+	location ~ \.(mp3) {
+		add_header Content-Disposition "attachment; filename=$request_filename";
+		root /var/www/tutorial/my_music;
+		#add_header Content-Type $content_type;
+    		#try_files $uri = 404;			
+		#add_header Content-Type audio/mpeg;		
 		#add_header Content-disposition "attachment; filename=BloodyStream.mp3";
-           	#add_header Content-Disposition: filename="BloodyStream.mp3"; 
-		return 200;
+        	#add_header Content-Disposition: filename="BloodyStream.mp3"; 
+		try_files $uri = 404;
+		#return 200;
 	}
-	location /download_music {
-		proxy_pass https://taskdomain.ddnsking.com/my_music/BloodyStream.mp3;
-	}
+	#location /download_music {
+	#	proxy_pass https://taskdomain.ddnsking.com/my_music;
+	#}
 
 	#--------------------------------------------------------- php info
 	location /another_serv_infophp {
-	
+		#try_files $uri $uri/ /index.php$is_args$args;
+		proxy_pass http://44.212.54.200/info.php;	
 	}
+	
+	#location ~ /another_serv_infophp\.php$ {
+        #    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        #    fastcgi_pass unix:/var/run/php7.2-fpm-wordpress-site.sock;
+        #    fastcgi_index index.php;
+        #    include fastcgi.conf;
+    	#}
 
 	#-------------------------------------------------------- another server
 	location /another_server {
@@ -47,7 +60,7 @@ server {
     		#proxy_set_header   X-Real-IP $remote_addr;
     		#proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
 		#proxy_pass http://3.84.8.209:80; # $scheme
-		rewrite ^/another_server(.*)$ http://3.84.8.209:80 redirect;
+		rewrite ^/another_server(.*)$ http://44.212.54.200:80 redirect;
     	}
 
 	#--------------------------------------------------------- redirect to HTTPS for all (has been changed in bottom)

@@ -23,12 +23,16 @@ server {
 		# logs
 		access_log /var/log/nginx/a_log.log main;
 		#error_log /var/log/nginx/e_log.log main;
+		try_files $uri =404;
 	}
 	#------------------------------------------------------- image 
-	location /image1 {
+	location ~ .jpg {
+		root /var/www/tutorial;
+		image_filter_buffer 20M;
+		image_filter rotate 180;
 		try_files $uri =404;	
 	}
-	location /image2 {
+	location ~* .png {
 		try_files $uri =404;
 	}	
 

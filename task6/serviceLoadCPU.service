@@ -1,0 +1,9 @@
+[Unit]
+Description=Service to check load CPU
+After=network.target
+
+[Service]
+ExecStart=/bin/bash /etc/nginx/sites-enabled/daemonLoadCPU
+
+[Install]
+WantedBy=default.target

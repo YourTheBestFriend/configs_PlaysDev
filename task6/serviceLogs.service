@@ -1,0 +1,11 @@
+[Unit]
+Description=Service to check logs
+
+[Service]
+ExecStart=/bin/bash /etc/nginx/sites-enabled/daemonLogs
+#ExecReload=/bin/bash /etc/nginx/sites-enabled/daemonLogs
+Type=notify
+Restart=always
+
+[Install]
+WantedBy=default.target

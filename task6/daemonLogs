@@ -1,0 +1,22 @@
+#!/bin/bash
+while [ true ];
+do
+	# section of cleaning main log and set info in first file + create archive
+	mv /var/log/nginx/access.log /var/log/nginx/MyFirstLOG.log
+	kill -USR1 `cat /run/nginx.pid` # master.nginx.pod 
+	sleep 1 # sleep for create archive without errors
+	gzip /var/log/nginx/MyFirstLOG.log
+
+	# section of set 500 status code in file3, 400 file4 + clear that's status code in main log file (MyFirst) 
+	# parse MyFirstLOG.log
+		
+
+	# sleep
+	sleep 5
+
+	if [ $(du /var/log/nginx/MyFirstLOG.log | awk '{print $1;}') -gt 300 ]; then
+		# clear myfirstlog
+		echo '' > /var/log/nginx/MyFirstLOG.log
+		echo -e "$(date) file MyFirstLOG.log has been cleaned" > /var/log/nginx/MySecondLOG.log # 2 file info when clear main file
+	fi
+done

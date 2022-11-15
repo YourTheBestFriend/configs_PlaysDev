@@ -1,0 +1,59 @@
+# log_format 
+#log_format main '$proxy_host - $upstream_addr - [$time_local]';  
+
+upstream test {
+	server taskdomain.ddnsking.com;
+}
+
+server {	
+	
+	# listen 80;
+	server_name taskdomain.ddnsking.com;
+	root /var/www/tutorial;
+	index index.html index.htm index.nginx-debian.html;
+
+	#-------------------------------------------------------
+	location =/ {
+		#try_files $uri, $uri/ =404;
+		#proxy_pass https://test/page;
+		#proxy_read_timeout 15;
+		#proxy_connect_timeout 2;
+	#	include proxy_params;
+		
+		#root /var/www/tutorial;
+		#index index.html;
+		#rewrite ^ / redirect;
+		try_files $uri, $uri/ =404;
+	}	
+	
+	#location / {
+	#	ssi on;
+	#        set $inc $request_uri;
+	#        if (!-f $request_filename) {
+	#		rewrite ^ /index.html last;
+	#	}
+        #      	 if (!-f $document_root$inc.html) {
+        #      		return 404;
+        # 	}		
+	#}
+
+	#------------------------------------------------------- SSL via Letsencrypt
+    	listen 443 ssl; # managed by Certbot
+    	ssl_certificate /etc/letsencrypt/live/taskdomain.ddnsking.com/fullchain.pem; # managed by Certbot
+    	ssl_certificate_key /etc/letsencrypt/live/taskdomain.ddnsking.com/privkey.pem; # managed by Certbot
+        include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    	ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+	# -- or manually
+	#listen 443 ssl default_server;
+	#ssl_certificate server.crt;
+	#ssl_certificate_key server.key;
+}
+
+server {
+    if ($host = taskdomain.ddnsking.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+    listen 80;
+    return 404; # managed by Certbot
+}

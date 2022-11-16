@@ -1,9 +1,9 @@
 # log_format 
 #log_format main '$proxy_host - $upstream_addr - [$time_local]';  
 
-upstream test {
-	server taskdomain.ddnsking.com;
-}
+#upstream test {
+#	server taskdomain.ddnsking.com;
+#}
 
 server {	
 	
@@ -25,7 +25,9 @@ server {
 		#rewrite ^ / redirect;
 		try_files $uri, $uri/ =404;
 	}	
-	
+	location /test502 {
+		return 502;
+	}	
 	#location / {
 	#	ssi on;
 	#        set $inc $request_uri;

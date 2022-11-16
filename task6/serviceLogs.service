@@ -2,9 +2,9 @@
 Description=Service to check logs
 
 [Service]
-ExecStart=/bin/bash /etc/nginx/sites-enabled/daemonLogs
+ExecStart=/bin/bash /home/ubuntu/scripts/daemonLogs
 #ExecReload=/bin/bash /etc/nginx/sites-enabled/daemonLogs
-Type=notify
+#Type=notify
 Restart=always
 
 [Install]

@@ -1,21 +1,35 @@
-resource "aws_rds_cluster" "rds_cluster" {
-  cluster_identifier = "testclusterrds"
-  engine             = "postgres"
-  engine_mode        = "provisioned"
-  engine_version     = "13.6"
-  database_name      = "my_postgresql_db"
-  master_username    = "postgres"
-  master_password    = var.db_password
+resource "aws_db_subnet_group" "test" {
+  name       = "test"
+  subnet_ids = [ var.public_subnet_id ]
 
-  serverlessv2_scaling_configuration {
-    max_capacity = 1.0
-    min_capacity = 0.5
+  tags = {
+    Name = "db-subnet-group"
   }
 }
 
-resource "aws_rds_cluster_instance" "rds_cluster_instance" {
-  cluster_identifier = aws_rds_cluster.rds_cluster.id
-  instance_class     = "db.t3.micro"
-  engine             = aws_rds_cluster.rds_cluster.engine
-  engine_version     = aws_rds_cluster.rds_cluster.engine_version
+
+resource "aws_db_parameter_group" "test" {
+  name   = "test"
+  family = "postgres14"
+
+  parameter {
+    name  = "log_connections"
+    value = "1"
+  }
+}
+
+resource "aws_db_instance" "testpostgresql" {
+  identifier             = "testpostgresql"
+  instance_class         = "db.t3.micro"
+  allocated_storage      = 5
+  engine                 = "postgres"
+  engine_version         = "14.1"
+  username               = "postgres"
+  password               = var.db_password
+  db_subnet_group_name   = aws_db_subnet_group.test.name
+  vpc_security_group_ids = [ var.security_group_public_id ]
+  parameter_group_name   = aws_db_parameter_group.test.name
+  publicly_accessible    = true
+  skip_final_snapshot    = true
+  multi_az               = true
 }

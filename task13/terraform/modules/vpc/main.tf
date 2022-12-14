@@ -1,10 +1,11 @@
-data "aws_availability_zones" "available" {
-  state = "available"
-}
+data "aws_availability_zones" "available" {}
 
 ############################ main resources
 resource "aws_vpc" "main" {
   cidr_block = var.base_cidr_block
+  
+  enable_dns_hostnames = true
+  #enable_dns_support   = true
    tags = {
     Name = "${var.env}-VPC-task13"
   }
@@ -91,15 +92,4 @@ resource "aws_route_table_association" "private_routes" {
   count          = length(aws_subnet.private_subnets[*].id)
   route_table_id = aws_route_table.private_subnets[count.index].id
   subnet_id      = element(aws_subnet.private_subnets[*].id, count.index)
-}
-
-################################################ private db subnet for RDS
-resource "aws_subnet" "private_db_subnets" {
-  count             = length(var.private_subnet_db_cidrs)
-  availability_zone = data.aws_availability_zones.available.names[count.index]
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = element(var.private_subnet_db_cidrs, count.index)
-  tags = {
-    Name = "${var.env}-private-database-${count.index + 1}"
-  }
 }

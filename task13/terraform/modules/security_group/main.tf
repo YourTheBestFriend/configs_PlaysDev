@@ -14,7 +14,7 @@ resource "aws_security_group_rule" "public_out_all" {
   from_port   = 0
   to_port     = 0
   protocol    = "all" # or -1
-  cidr_blocks = [ var.vpc_cidr ]
+  cidr_blocks = [ var.vpc_cidr_all ]
   # set this rule to aws_security_group ( public_security_group )
   security_group_id = aws_security_group.public_security_group.id
 }
@@ -24,39 +24,37 @@ resource "aws_security_group_rule" "public_in_ssh" {
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = [ var.vpc_cidr ]
+  cidr_blocks       = [ var.vpc_cidr_all ]
   # set this rule to aws_security_group ( public_security_group )
   security_group_id = aws_security_group.public_security_group.id
 }
- 
-############################################### private security group for rds in vpc
-resource "aws_security_group" "private_security_group" {
-  # link with vpc via id
+
+############################################### Security Group for public rds
+resource "aws_security_group" "security_group_rds" {
   vpc_id = var.vpc_id
-  name = "private-security-group"
-  description = "private internet access"
+  name = "security-group"
+  description = "rds access"
   tags = {
-    Name = "private-security-group"
+    Name = "security-group-rds"
   }
 }
-####### rule 1
-resource "aws_security_group_rule" "private_out_all" {
+####### rule 1 - for rds out
+resource "aws_security_group_rule" "public_out_tcp_rds" {
   type        = "egress" # выход
-  from_port   = 0
-  to_port     = 0
-  protocol    = "all" # or -1
-  cidr_blocks = [ var.vpc_cidr ] 
-  # set this rule to aws_security_group ( private_security_group )
-  security_group_id = aws_security_group.private_security_group.id
+  from_port   = 5432
+  to_port     = 5432
+  protocol    = "tcp" # or -1
+  cidr_blocks = [ var.vpc_cidr_all ]
+  # set this rule to aws_security_group ( public_security_group )
+  security_group_id = aws_security_group.security_group_rds.id
 }
-####### rule 2 - for get access rds
-resource "aws_security_group_rule" "private_in_for_rds" {
-  # 5432 - rds tcp
+####### rule 2 - for rds in
+resource "aws_security_group_rule" "public_in_tcp_rds" {
   type              = "ingress" # вход
   from_port         = 5432
   to_port           = 5432
-  protocol          = "tcp" 
-  cidr_blocks       = [ var.vpc_cidr ]
-  # set this rule to aws_security_group ( private_security_group )
-  security_group_id = aws_security_group.private_security_group.id
+  protocol          = "tcp"
+  cidr_blocks       = [ var.vpc_cidr_all ]
+  # set this rule to aws_security_group ( public_security_group )
+  security_group_id = aws_security_group.security_group_rds.id
 }

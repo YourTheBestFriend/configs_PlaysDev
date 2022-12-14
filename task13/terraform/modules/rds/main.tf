@@ -1,12 +1,12 @@
 resource "aws_db_subnet_group" "test" {
   name       = "test"
-  subnet_ids = [ var.public_subnet_id ]
+  # for test mannualy
+  subnet_ids = [ var.public_subnet_id[0], var.public_subnet_id[1] ]# [ var.public_subnet_id ]
 
   tags = {
     Name = "db-subnet-group"
   }
 }
-
 
 resource "aws_db_parameter_group" "test" {
   name   = "test"
@@ -32,4 +32,5 @@ resource "aws_db_instance" "testpostgresql" {
   publicly_accessible    = true
   skip_final_snapshot    = true
   multi_az               = true
+  max_allocated_storage = 100
 }

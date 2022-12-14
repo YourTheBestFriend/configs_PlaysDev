@@ -44,7 +44,7 @@ output "ec2_module" {
 module "rds" {
   source                   = "./modules/rds"
   # set subnet
-  public_subnet_id         = module.vpc.public_subnet_ids[0]
+  public_subnet_id         = module.vpc.public_subnet_ids #[0]
   # security group - for access via tcp 5432 to rds
   security_group_public_id = module.security_group.security_group_rds
 }

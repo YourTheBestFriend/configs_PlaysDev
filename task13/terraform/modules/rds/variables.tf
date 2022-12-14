@@ -1,5 +1,5 @@
 variable "db_password" {
-  default = "21er4fF34&dsf@"
+  default = "rwafdfer"
 }
 variable "public_subnet_id" {
   # variable sets after vpc/main.tf output

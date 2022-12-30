@@ -1,0 +1,8 @@
+---
+- name: Task 19 docker on servers
+  hosts: my_servers
+  become: yes
+
+  roles: 
+    - { role: deploy_docker_app, when: ansible_system == "Linux" } 
+

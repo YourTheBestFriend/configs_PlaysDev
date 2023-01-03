@@ -25,13 +25,14 @@
    #shell: docker pull matveygoncharov/task14:latest
 
 - name: docker run via image
-  #shell: docker stop my_container && docker rm $(docker ps -a -q)
-  shell: docker run --name container_amazon -d -p 80:80 matveygoncharov/task14:latest
+  shell: docker stop container_amazon && docker rm $(docker ps -a -q ) && docker rmi $(docker images -q) && docker run --name container_amazon -d -p 80:80 matveygoncharov/task14:latest
   #shell: docker stop my_container && docker rm $(docker ps -a -q)
   #notify: restart docker
+  #become: yes
   when: ansible_os_family == "RedHat"
 
 - name: docker run via image 2
-  shell: docker run --name container_ubuntu -d -p 80:80 matveygoncharov/task14:latest
+  shell: docker stop container_ubuntu && docker rm $(docker ps -a -q ) && docker rmi $(docker images -q) && docker run --name container_ubuntu -d -p 80:80 matveygoncharov/task14:latest
   #notify: restart docker
+  #become: yes
   when: ansible_os_family == "Debian"

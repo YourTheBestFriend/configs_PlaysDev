@@ -2,13 +2,13 @@ version: 0.2
 
 env:
   variables:
-    CODEBUILD_SRC_DIR: $CODEBUILD_SRC_DIR+"task14/"
+    # CODEBUILD_SRC_DIR:
     AWS_DEFAULT_REGION: "us-east-1"
     AWS_ACCOUNT_ID: "607625433342"
     ECR_REPO_NAME: "docker-image-task20"
     ECR_IMAGE_TAG: "latest"
     DOCKERHUB_USERNAME: "matveygoncharov"
-    DOCKERHUB_PASS: "asf#5gsdfgHb34$"
+    DOCKERHUB_PASS: ""
 
 phases:
   install:

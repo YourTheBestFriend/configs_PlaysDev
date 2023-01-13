@@ -6,7 +6,7 @@ env:
     AWS_ACCOUNT_ID: "607625433342"
     ECR_REPO_NAME: "docker-image-task20"
     ECR_IMAGE_TAG: "latest"
-    DOCKERHUB_USERNAME: "matveygoncharov77"
+    DOCKERHUB_USERNAME: "matveygoncharov"
     DOCKERHUB_PASS: "asf#5gsdfgHb34$"
 
 phases:

@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    CODEBUILD_SRC_DIR: "task14"
+    CODEBUILD_SRC_DIR: "/codebuild/output/src994580450/src/github.com/YourTheBestFriend/configs_PlaysDev/task14/"
     AWS_DEFAULT_REGION: "us-east-1"
     AWS_ACCOUNT_ID: "607625433342"
     ECR_REPO_NAME: "docker-image-task20"
@@ -26,7 +26,7 @@ phases:
   build:
     commands:
       - echo "Building the Docker image..."          
-      - docker build . -t $ECR_REPO_NAME:1.$CODEBUILD_BUILD_NUMBER -f task14/Dockerfile
+      - docker build . -t $ECR_REPO_NAME:1.$CODEBUILD_BUILD_NUMBER
       #- docker tag $ECR_REPO_NAME:1.$CODEBUILD_BUILD_NUMBER $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPO_NAME:latest
       - docker tag $ECR_REPO_NAME:1.$CODEBUILD_BUILD_NUMBER $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPO_NAME.$CODEBUILD_BUILD_NUMBER
       - echo "Build complete"

@@ -2,6 +2,7 @@ version: 0.2
 
 env:
   variables:
+    CODEBUILD_SRC_DIR: "task14"
     AWS_DEFAULT_REGION: "us-east-1"
     AWS_ACCOUNT_ID: "607625433342"
     ECR_REPO_NAME: "docker-image-task20"

@@ -1,0 +1,32 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - "alert.rules"
+
+scrape_configs:
+  - job_name: 'prometheus'
+    metrics_path: /metrics
+    static_configs:
+    - targets: ['localhost:9090']
+  - job_name: 'node'
+    metrics_path: /metrics
+    static_configs:
+    - targets: ['node-exporter:9100'] #['node-exporter:9100']
+  - job_name: 'alertmanager'
+    metrics_path: /metrics
+    static_configs:
+    - targets: ['alertmanager:9093'] #['alertmanager:9093']
+  # my job for another server - check load ram
+  - job_name: 'noderam'
+    metrics_path: /metrics
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['18.206.205.88:9101']
+
+alerting:
+  alertmanagers:
+    - scheme: http
+      static_configs:
+        - targets: ['alertmanager:9093']

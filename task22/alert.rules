@@ -1,0 +1,20 @@
+groups:
+- name: example
+  rules:
+  # alert for first ec2 - check by cpu
+  - alert: HighCPU
+    expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle", job="node"}[2m])) * 100) > 20 #100 - (avg by (instance) (irate(node_cpu{mode="idle"}[5m])) * 100) > 10
+    for: 10s
+    labels:
+      severity: critical
+    annotations:
+      summary: "Instance {{ $labels.instance }} is using high CPU"
+  # alert for second ec2 - check by ram
+  - alert: HighLoadRam_another_server
+    expr: avg_over_time(node_memory_MemFree_bytes{job="noderam"}[5s])/node_memory_MemTotal_bytes{job="noderam"} * 100 > 25 #(node_load1 {job="noderam"}) > 0.5
+    for: 5s
+    labels:
+      severity: critical#'warning'
+    annotations:
+      summary: "Job {{ $labels.job }} for load ram"
+      description: "Problem with RAM - instance {{ $labels.instance }}"

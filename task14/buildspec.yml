@@ -1,0 +1,38 @@
+version: 0.2
+
+env:
+  variables:
+    # CODEBUILD_SRC_DIR:
+    AWS_DEFAULT_REGION: "us-east-1"
+    AWS_ACCOUNT_ID: "607625433342"
+    ECR_REPO_NAME: "docker-image-task20"
+    ECR_IMAGE_TAG: "latest"
+    DOCKERHUB_USERNAME: "matveygoncharov"
+    DOCKERHUB_PASS: ""
+
+phases:
+  install:
+    commands:
+      - echo "Check aws and git version"
+      - aws --version
+      - git --version
+
+  pre_build:
+    commands:
+      - echo "Login to AWS ECR and get commit id"
+      - docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASS # docker login if need
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+
+  build:
+    commands:
+      - echo "Building the Docker image..."          
+      - docker build . -t $ECR_REPO_NAME:1.$CODEBUILD_BUILD_NUMBER
+      #- docker tag $ECR_REPO_NAME:1.$CODEBUILD_BUILD_NUMBER $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPO_NAME:latest
+      - docker tag $ECR_REPO_NAME:1.$CODEBUILD_BUILD_NUMBER $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPO_NAME.$CODEBUILD_BUILD_NUMBER
+      - echo "Build complete"
+
+  post_build:
+    commands:
+      - echo "Pushing the Docker image..."
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPO_NAME:1.$CODEBUILD_BUILD_NUMBER
+      #- docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPO_NAME:latest

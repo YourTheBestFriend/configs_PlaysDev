@@ -1,9 +1,6 @@
 user www-data;
 worker_processes auto;
 pid /run/nginx.pid;
-include /etc/nginx/modules/*.conf;
-# include /usr/share/nginx/modules/mod-http-image-filter.conf;
-#load_module /etc/nginx/modules/ngx_http_image_filter_module.so;
 
 events {
         worker_connections 768;
@@ -58,47 +55,36 @@ http {
         # Virtual Host Configs
         ##
 
-        upstream my_web_app {
-         server red.domentask.site;
-         server blue.domentask.site;
-        }
-
-    # log_format
-    log_format main '$proxy_host - $upstream_addr - [$time_local]';
-    server {
+	upstream my_web_app {
+	        server red.domentask.site;
+		server blue.domentask.site;
+	}
+	
+        server {
+        # dns name
         server_name www.domentask.site;
-        listen 80;
         root /var/www/tutorial;
         index index.html index.htm index.nginx-debian.html;
 
         # from task4
         #--------------------------------------------------------- page 2 - proxing via dns
         location /my_page2 {
-                #root /var/www/tutorial/my_page2;
+                root /var/www/tutorial/my_page2;
                 index index2.html;
-                #try_files $uri =404;
         }
         location /page2 {
-                proxy_pass http://localhost:80/my_page2/;
-                proxy_set_header Host $host;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_pass http://$server_addr/my_page2;
         }
 
         #--------------------------------------------------------- music mp3
         location ~*\.mp3$ {
-                #root /var/www/my_music;
+                root /var/www/my_music;
                 default_type application/octet-stream;
                 types           {}
                 add_header Content-Disposition "attachment";
         }
         location /download_music {
-                proxy_pass http://localhost:80/my_music/BloodyStream.mp3;
-                proxy_set_header Host $host;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_pass http://$server_addr/my_music/BloodyStream.mp3;
         }
 
         #--------------------------------------------------------- php info
@@ -118,22 +104,25 @@ http {
                 proxy_read_timeout 15;
                 proxy_connect_timeout 2;
                 #include proxy_params;
-
-                # logs
-                access_log /var/log/nginx/a_log.log main;
-                #error_log /var/log/nginx/e_log.log main;
         }
         #------------------------------------------------------- image
-        location ~* .jpg {
-                #root /var/www/tutorial;
+        location ~ .jpg {
+                root /var/www/tutorial;
                 #image_filter_buffer 20M;
-                image_filter rotate 180;
+                #image_filter rotate 180;
                 try_files $uri =404;
         }
         location ~* .png {
                 try_files $uri =404;
         }
-    }
-        # include /etc/nginx/conf.d/*.conf;
-        # include /etc/nginx/sites-enabled/*;
+
+        #--------------------------------------------------------- redirect to HTTPS for all (has been changed in bottom)
+        #return 301 https://$host$request_uri;
+
+        #-------------------------------------------------------- SSL via Letsencrypt
+        # -- or manually
+        #listen 443 ssl default_server;
+        #ssl_certificate server.crt;
+        #ssl_certificate_key server.key;
+        }
 }

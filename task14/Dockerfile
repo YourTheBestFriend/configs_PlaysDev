@@ -1,23 +1,23 @@
 # image
-#FROM nginx 
-# update pakages
-#RUN apk update
-#RUN adduser -u 1000 -D -S -G www-data www-data
-FROM alpine:latest
+FROM alpine:3.17.0
+
+# install, update pakages
 RUN apk update && apk upgrade
 RUN apk add bash
 RUN apk add nginx
-RUN apk add --upgrade nginx-mod-http-image-filter
+# images filter for rotate picture
+RUN apk add nginx-mod-http-image-filter 
+# user 
 RUN adduser -u 1000 -D -S -G www-data www-data
-
 # create main folder
-RUN mkdir -p "/var/www/tutorial/" "/var/www/tutorial/my_music" "/var/www/tutorial/my_page2"
+RUN mkdir -p "/var/www/tutorial/" 
+RUN mkdir -p "/var/www/tutorial/my_music"
+RUN mkdir -p "/var/www/tutorial/my_page2"
 
 # create folder for ssl
 #RUN mkdir -p "/etc/letsencrypt/live/www.domentask.site/"
 #RUN mkdir -p "/etc/letsencrypt/live/www.domentask.site/"
 #RUN mkdir -p "/etc/letsencrypt/"
-
 # copy data ssl
 #COPY fullchain.pem /etc/letsencrypt/live/www.domentask.site/fullchain.pem
 #COPY privkey.pem /etc/letsencrypt/live/www.domentask.site/privkey.pem
@@ -32,18 +32,18 @@ COPY ./tutorial/my_music/BloodyStream.mp3 /var/www/tutorial/my_music/BloodyStrea
 COPY ./tutorial/image1.png /var/www/tutorial/image1.png
 COPY ./tutorial/image2.jpg /var/www/tutorial/image2.jpg
 
+# set all access
 RUN chmod 777 /etc/nginx/nginx.conf
 RUN chmod 777 /var/www/tutorial/index.html
-RUN chmod 777 /var/www/tutorial/my_page2/index2.html
 RUN chmod 777 /var/www/tutorial/my_page2/index2.html
 RUN chmod 777 /var/www/tutorial/my_music/BloodyStream.mp3
 RUN chmod 777 /var/www/tutorial/image1.png
 RUN chmod 777 /var/www/tutorial/image2.jpg
  
 # ports
-EXPOSE 80
+EXPOSE 80 
 EXPOSE 443
 EXPOSE 8080
 
-CMD nginx -g "daemon off;" 
-
+# daemon
+CMD nginx -g "daemon off;"

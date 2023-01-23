@@ -1,0 +1,4 @@
+---
+# handlers file for deploy_docker_app
+- name: restart docker
+  service: name=docker state=restarted

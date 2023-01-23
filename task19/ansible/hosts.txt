@@ -1,0 +1,10 @@
+[ubuntus]
+linux_ubunut_1 ansible_host=44.211.124.240
+
+[amazons]
+linux_amazon_1 ansible_host=44.203.137.50
+
+[my_servers:children]
+ubuntus
+amazons
+
